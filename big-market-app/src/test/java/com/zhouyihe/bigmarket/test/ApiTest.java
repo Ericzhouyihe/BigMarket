@@ -16,4 +16,10 @@ public class ApiTest {
         log.info("测试完成");
     }
 
+    public void test(UserVO userVO){
+        UserDTO userDTO = new UserDTO();
+        userDTO.setName(userVO.getName());
+        userDTO.setPhone(userVO.getPhone());
+        userDTO.setEmail(userVO.getEmail());
+    }
 }
