@@ -1,5 +1,6 @@
 package com.zhouyihe.bigmarket.test;
 
+import com.zhouyihe.bigmarket.infrastructure.persistent.redis.IRedisService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,6 +11,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class ApiTest {
+    
+    private IRedisService redisService;
 
     @Test
     public void test() {
