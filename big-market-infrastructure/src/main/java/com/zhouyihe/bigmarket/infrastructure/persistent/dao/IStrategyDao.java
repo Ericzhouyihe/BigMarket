@@ -1,6 +1,7 @@
 package com.zhouyihe.bigmarket.infrastructure.persistent.dao;
 
 import com.zhouyihe.bigmarket.infrastructure.persistent.po.Strategy;
+import com.zhouyihe.bigmarket.infrastructure.persistent.po.StrategyRule;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -16,4 +17,6 @@ import java.util.List;
 public interface IStrategyDao {
     
     List<Strategy> queryStrategyList();
+    
+    Strategy queryStrategyByStrategyId(Long strategyId);
 }
