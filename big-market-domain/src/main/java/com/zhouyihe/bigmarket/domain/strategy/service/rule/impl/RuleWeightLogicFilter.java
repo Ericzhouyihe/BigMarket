@@ -17,7 +17,7 @@ import java.util.*;
 /**
  * @author ZhouYihe 1552951165@qq.com
  * @create 2024/9/18 14:22
- * @description
+ * @description 【抽奖前规则】根据抽奖权重返回可抽奖范围KEY
  */
 @Slf4j
 @Component

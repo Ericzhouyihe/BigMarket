@@ -16,7 +16,7 @@ import javax.annotation.Resource;
 /**
  * @author ZhouYihe 1552951165@qq.com
  * @create 2024/9/18 14:22
- * @description
+ * @description 【抽奖前规则】黑名单用户过滤规则
  */
 @Slf4j
 @Component
