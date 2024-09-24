@@ -24,7 +24,7 @@ import java.util.Map;
  * @author: ZhouYihe
  * @qq: 1552951165
  * @date: 2024/9/7
- * @description: 策略仓储实现
+ * @description: 策略服务仓储实现
  */
 @Repository
 public class StrategyRepository implements IStrategyRepository {
@@ -76,6 +76,11 @@ public class StrategyRepository implements IStrategyRepository {
     }
     
     @Override
+    public Integer getStrategyAwardAssemble(String key, Integer rateKey) {
+        return redisService.getFromMap(Constants.RedisKey.STRATEGY_RATE_TABLE_KEY + key, rateKey);
+    }
+    
+    @Override
     public int getRateRange(Long strategyId) {
         return getRateRange(String.valueOf(strategyId));
     }
@@ -118,7 +123,13 @@ public class StrategyRepository implements IStrategyRepository {
     }
     
     @Override
-    public Integer getStrategyAwardAssemble(String key, Integer rateKey) {
-        return redisService.getFromMap(Constants.RedisKey.STRATEGY_RATE_TABLE_KEY + key, rateKey);
+    public String queryStrategyRuleValue(Long strategyId, Integer awardId, String ruleModel) {
+        StrategyRule strategyRuleReq = new StrategyRule();
+        strategyRuleReq.setStrategyId(strategyId);
+        strategyRuleReq.setAwardId(awardId);
+        strategyRuleReq.setRuleModel(ruleModel);
+        
+        return strategyRuleDao.queryStrategyRuleValue(strategyRuleReq);
     }
+    
 }
