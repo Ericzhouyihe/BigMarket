@@ -4,7 +4,7 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * @author Fuzhengwei bugstack.cn @小傅哥
+ * @author ZhouYihe
  * @description Redis 连接配置 <a href="https://github.com/redisson/redisson/tree/master/redisson-spring-boot-starter">redisson-spring-boot-starter</a>
  * @create 2023-09-03 16:51
  */

@@ -15,7 +15,7 @@ import java.util.Map;
  * @ClassName StrategyRuleEntity
  * @author: ZhouYihe 1552951165@qq.com
  * @date: 2024/9/9
- * @description:
+ * @description: 策略规则实体
  */
 @Data
 @Builder
@@ -58,7 +58,7 @@ public class StrategyRuleEntity {
      * @return
      */
     public Map<String, List<Integer>> getRuleWeightValues() {
-        if (!ruleModel.equals("rule_weight")) return null;
+        if (!"rule_weight".equals(ruleModel)) return null;
         String[] ruleValueGroups = ruleValue.split(Constants.SPACE);
         Map<String,List<Integer>> resultMap = new HashMap<>();
         for (String ruleValueGroup : ruleValueGroups) {

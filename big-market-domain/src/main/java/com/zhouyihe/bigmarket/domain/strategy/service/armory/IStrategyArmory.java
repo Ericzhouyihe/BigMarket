@@ -5,7 +5,7 @@ package com.zhouyihe.bigmarket.domain.strategy.service.armory;
  * @author: ZhouYihe
  * @qq: 1552951165
  * @date: 2024/9/7
- * @description:
+ * @description: 策略装配库(兵工厂)，负责初始化策略计算
  */
 public interface IStrategyArmory {
     

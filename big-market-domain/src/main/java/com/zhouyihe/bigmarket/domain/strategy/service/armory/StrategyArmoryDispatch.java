@@ -4,6 +4,7 @@ import com.zhouyihe.bigmarket.domain.strategy.model.entity.StrategyAwardEntity;
 import com.zhouyihe.bigmarket.domain.strategy.model.entity.StrategyEntity;
 import com.zhouyihe.bigmarket.domain.strategy.model.entity.StrategyRuleEntity;
 import com.zhouyihe.bigmarket.domain.strategy.repository.IStrategyRepository;
+import com.zhouyihe.bigmarket.types.common.Constants;
 import com.zhouyihe.bigmarket.types.enums.ResponseCode;
 import com.zhouyihe.bigmarket.types.exception.AppException;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +21,7 @@ import java.util.*;
  * @author: ZhouYihe
  * @qq: 1552951165
  * @date: 2024/9/7
- * @description:
+ * @description: 策略装配库(兵工厂)，负责初始化策略计算
  */
 @Slf4j
 @Service
@@ -29,6 +30,12 @@ public class StrategyArmoryDispatch implements IStrategyArmory, IStrategyDispatc
     @Resource
     private IStrategyRepository repository;
     
+    /**
+     * 装配抽奖策略配置「触发的时机可以为活动审核通过后进行调用」
+     *
+     * @param strategyId 策略ID
+     * @return 装配结果
+     */
     @Override
     public boolean assembleLotteryStrategy(Long strategyId) {
         // 1. 查询策略配置
@@ -40,13 +47,13 @@ public class StrategyArmoryDispatch implements IStrategyArmory, IStrategyDispatc
         String ruleWeight = strategyEntity.getRuleWeight();
         
         // 当RuleWeight中没有rule_weight类型时,直接返回true
-        if (strategyEntity == null) return true;
+        if (null == ruleWeight) return true;
         
         // 获取抽奖跪着类型为rule_weight的抽奖规则
         StrategyRuleEntity strategyRuleEntity = repository.queryStrategyRule(strategyId, ruleWeight);
         
         // 查询结果为空,抛出异常
-        if (strategyRuleEntity == null) {
+        if (null == strategyRuleEntity) {
             throw new AppException(ResponseCode.STRATEGY_RULE_WEIGHT_IS_NULL.getCode(), ResponseCode.STRATEGY_RULE_WEIGHT_IS_NULL.getInfo());
         }
         
@@ -59,7 +66,7 @@ public class StrategyArmoryDispatch implements IStrategyArmory, IStrategyDispatc
             // 克隆strategyAwardEntities
             ArrayList<StrategyAwardEntity> strategyAwardEntitiesClone = new ArrayList<>(strategyAwardEntities);
             strategyAwardEntitiesClone.removeIf(entity -> !ruleWeightValues.contains(entity.getAwardId()));
-            assembleLotteryStrategy(String.valueOf(strategyId).concat("_").concat(key), strategyAwardEntitiesClone);
+            assembleLotteryStrategy(String.valueOf(strategyId).concat(Constants.UNDERLINE).concat(key), strategyAwardEntitiesClone);
         }
         
         return true;
@@ -77,7 +84,7 @@ public class StrategyArmoryDispatch implements IStrategyArmory, IStrategyDispatc
                 .map(StrategyAwardEntity::getAwardRate)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         
-        // 3. 用 1 / 0.0001 获得概率范围，百分位、千分位、万分位
+        // 3. 用 概率值总和 / 最小概率值 得到大概总共的份数
         BigDecimal rateRange = totalAwardRate.divide(minAwardRate, 0, RoundingMode.CEILING);
         
         // 4. 生成策略奖品概率查找表「这里指需要在list集合中，存放上对应的奖品占位即可，占位越多等于概率越高」
@@ -107,8 +114,9 @@ public class StrategyArmoryDispatch implements IStrategyArmory, IStrategyDispatc
     @Override
     public Integer getRandomAwardId(Long strategyId) {
         // 分布式部署下，不一定为当前应用做的策略装配。也就是值不一定会保存到本应用，而是分布式应用，所以需要从 Redis 中获取。
+        // 实际上就是获取到奖品枚举列表的长度
         int rateRange = repository.getRateRange(strategyId);
-        // 通过生成的随机值，获取概率值奖品查找表的结果
+        // 奖品枚举列表的长度范围内生成的随机值，得到随机的奖品,返回奖品id
         return repository.getStrategyAwardAssemble(String.valueOf(strategyId), new SecureRandom().nextInt(rateRange));
     }
     

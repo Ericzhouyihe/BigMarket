@@ -3,8 +3,13 @@ package com.zhouyihe.bigmarket.test.domain;
 import com.alibaba.fastjson.JSON;
 import com.zhouyihe.bigmarket.domain.strategy.model.entity.RaffleAwardEntity;
 import com.zhouyihe.bigmarket.domain.strategy.model.entity.RaffleFactorEntity;
+import com.zhouyihe.bigmarket.domain.strategy.model.entity.StrategyRuleEntity;
 import com.zhouyihe.bigmarket.domain.strategy.service.IRaffleStrategy;
+import com.zhouyihe.bigmarket.domain.strategy.service.armory.IStrategyArmory;
+import com.zhouyihe.bigmarket.domain.strategy.service.rule.impl.RuleLockLogicFilter;
 import com.zhouyihe.bigmarket.domain.strategy.service.rule.impl.RuleWeightLogicFilter;
+import com.zhouyihe.bigmarket.infrastructure.persistent.po.StrategyAward;
+import com.zhouyihe.bigmarket.infrastructure.persistent.po.StrategyRule;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,21 +31,45 @@ import javax.annotation.Resource;
 public class RaffleStrategyTest {
     
     @Resource
+    private IStrategyArmory strategyArmory;
+    
+    @Resource
     private IRaffleStrategy raffleStrategy;
     
     @Resource
     private RuleWeightLogicFilter ruleWeightLogicFilter;
     
+    @Resource
+    private RuleLockLogicFilter ruleLockLogicFilter;
+    
     @Before
     public void setup() {
+        log.info("测试结果:{}", strategyArmory.assembleLotteryStrategy(100001L));
+        log.info("测试结果:{}", strategyArmory.assembleLotteryStrategy(100002L));
+        log.info("测试结果:{}", strategyArmory.assembleLotteryStrategy(100003L));
+        
         ReflectionTestUtils.setField(ruleWeightLogicFilter, "userScore", 4500L);
+        ReflectionTestUtils.setField(ruleLockLogicFilter, "userRaffleCount", 0L);
     }
     
     @Test
-    public void test_preformRaffle() {
+    public void test_preformRaffle_blacklist() {
         RaffleFactorEntity raffleFactorEntity = RaffleFactorEntity.builder()
                 .userId("zhouyihe")
                 .strategyId(100001L)
+                .build();
+        
+        RaffleAwardEntity raffleAwardEntity = raffleStrategy.performRaffle(raffleFactorEntity);
+        
+        log.info("请求参数: {}", JSON.toJSON(raffleFactorEntity));
+        log.info("测试结果: {}", JSON.toJSON(raffleAwardEntity));
+    }
+    
+    @Test
+    public void test_raffle_center_rule_lock() {
+        RaffleFactorEntity raffleFactorEntity = RaffleFactorEntity.builder()
+                .userId("zhouyihe")
+                .strategyId(100003L)
                 .build();
         
         RaffleAwardEntity raffleAwardEntity = raffleStrategy.performRaffle(raffleFactorEntity);

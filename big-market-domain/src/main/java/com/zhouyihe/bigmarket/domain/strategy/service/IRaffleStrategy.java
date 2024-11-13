@@ -2,7 +2,6 @@ package com.zhouyihe.bigmarket.domain.strategy.service;
 
 import com.zhouyihe.bigmarket.domain.strategy.model.entity.RaffleAwardEntity;
 import com.zhouyihe.bigmarket.domain.strategy.model.entity.RaffleFactorEntity;
-import com.zhouyihe.bigmarket.domain.strategy.model.entity.RuleActionEntity;
 
 /**
  * @ClassName IRaffleStrategy
@@ -10,7 +9,7 @@ import com.zhouyihe.bigmarket.domain.strategy.model.entity.RuleActionEntity;
  * @date: 2024/9/10
  * @description: 抽奖策略接口
  */
-    public interface IRaffleStrategy {
+public interface IRaffleStrategy {
     
     /**
      * 执行抽奖；用抽奖因子入参，执行抽奖计算，返回奖品信息

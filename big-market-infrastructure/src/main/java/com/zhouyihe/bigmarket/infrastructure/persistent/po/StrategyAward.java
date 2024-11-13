@@ -10,7 +10,7 @@ import java.util.Date;
  * @author: ZhouYihe
  * @qq: 1552951165
  * @date: 2024/9/5
- * @description:
+ * @description: 抽奖策略奖品明细配置 - 概率、规则
  */
 @Data
 public class StrategyAward {

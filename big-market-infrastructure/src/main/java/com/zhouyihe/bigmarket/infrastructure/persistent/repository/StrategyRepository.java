@@ -3,6 +3,7 @@ package com.zhouyihe.bigmarket.infrastructure.persistent.repository;
 import com.zhouyihe.bigmarket.domain.strategy.model.entity.StrategyAwardEntity;
 import com.zhouyihe.bigmarket.domain.strategy.model.entity.StrategyEntity;
 import com.zhouyihe.bigmarket.domain.strategy.model.entity.StrategyRuleEntity;
+import com.zhouyihe.bigmarket.domain.strategy.model.valobj.StrategyAwardRuleModelVO;
 import com.zhouyihe.bigmarket.domain.strategy.repository.IStrategyRepository;
 import com.zhouyihe.bigmarket.infrastructure.persistent.dao.IStrategyAwardDao;
 import com.zhouyihe.bigmarket.infrastructure.persistent.dao.IStrategyDao;
@@ -67,7 +68,7 @@ public class StrategyRepository implements IStrategyRepository {
     @Override
     public void storeStrategyAwardSearchRateTable(String key, Integer rateRange,
                                                   Map<Integer, Integer> strategyAwardSearchRateTable) {
-        // 1. 存储抽奖策略范围值,如10000,用于生成1000以内的随机数
+        // 1. 存储抽奖策略范围值,如rateRange为10000时,用于生成1000以内的随机数
         redisService.setValue(Constants.RedisKey.STRATEGY_RATE_RANGE_KEY + key, rateRange);
         
         // 2. 存储概率查找表
@@ -98,11 +99,13 @@ public class StrategyRepository implements IStrategyRepository {
         if (strategyEntity != null) return strategyEntity;
         
         Strategy strategy = strategyDao.queryStrategyByStrategyId(strategyId);
+        if (null == strategy) return StrategyEntity.builder().build();
         strategyEntity = StrategyEntity.builder()
                 .strategyId(strategy.getStrategyId())
                 .strategyDesc(strategy.getStrategyDesc())
                 .ruleModels(strategy.getRuleModels())
                 .build();
+        redisService.setValue(cacheKey, strategyEntity);
         return strategyEntity;
     }
     
@@ -130,6 +133,15 @@ public class StrategyRepository implements IStrategyRepository {
         strategyRuleReq.setRuleModel(ruleModel);
         
         return strategyRuleDao.queryStrategyRuleValue(strategyRuleReq);
+    }
+    
+    @Override
+    public StrategyAwardRuleModelVO queryStrategyAwardRuleModelVO(Long strategyId, Integer awardId) {
+        StrategyAward strategyAward = new StrategyAward();
+        strategyAward.setStrategyId(strategyId);
+        strategyAward.setAwardId(awardId);
+        String ruleModels = strategyAwardDao.queryStrategyAwardRuleModels(strategyAward);
+        return StrategyAwardRuleModelVO.builder().ruleModels(ruleModels).build();
     }
     
 }
