@@ -43,7 +43,6 @@ public class DefaultLogicFactory {
         RULE_BLACKLIST("rule_blacklist", "【抽奖前规则】黑名单规则过滤，命中黑名单则直接返回", "before"),
         RULE_LOCK("rule_lock", "【抽奖中规则】抽奖n次后,对应奖品可解锁抽奖", "center"),
         RULE_LUCK_AWARD("rule_luck_award", "【抽奖后规则】幸运奖保底", "after"),
-        
         ;
         
         private final String code;
@@ -52,6 +51,7 @@ public class DefaultLogicFactory {
         
         /**
          * 判断是否是抽奖中的规则
+         *
          * @param code
          * @return
          */
@@ -64,6 +64,7 @@ public class DefaultLogicFactory {
         
         /**
          * 判断是否是抽奖后的规则
+         *
          * @param code
          * @return
          */
