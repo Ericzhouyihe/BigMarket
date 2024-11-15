@@ -1,15 +1,14 @@
-package com.zhouyihe.bigmarket.domain.strategy.service.raffle;
+package com.zhouyihe.bigmarket.domain.strategy.service;
 
 import com.zhouyihe.bigmarket.domain.strategy.model.entity.RaffleAwardEntity;
 import com.zhouyihe.bigmarket.domain.strategy.model.entity.RaffleFactorEntity;
 import com.zhouyihe.bigmarket.domain.strategy.model.entity.RuleActionEntity;
-import com.zhouyihe.bigmarket.domain.strategy.model.entity.StrategyEntity;
 import com.zhouyihe.bigmarket.domain.strategy.model.valobj.RuleLogicCheckTypeVO;
 import com.zhouyihe.bigmarket.domain.strategy.model.valobj.StrategyAwardRuleModelVO;
 import com.zhouyihe.bigmarket.domain.strategy.repository.IStrategyRepository;
-import com.zhouyihe.bigmarket.domain.strategy.service.IRaffleStrategy;
 import com.zhouyihe.bigmarket.domain.strategy.service.armory.IStrategyDispatch;
-import com.zhouyihe.bigmarket.domain.strategy.service.rule.factory.DefaultLogicFactory;
+import com.zhouyihe.bigmarket.domain.strategy.service.rule.chain.ILogicChain;
+import com.zhouyihe.bigmarket.domain.strategy.service.rule.chain.factory.DefaultChainFactory;
 import com.zhouyihe.bigmarket.types.enums.ResponseCode;
 import com.zhouyihe.bigmarket.types.exception.AppException;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +27,8 @@ public abstract class AbstractRaffleStrategy implements IRaffleStrategy {
     protected IStrategyRepository repository;
     // 策略调度服务 -> 只负责抽奖处理，通过新增接口的方式，隔离职责，不需要使用方关心或者调用抽奖的初始化
     protected IStrategyDispatch strategyDispatch;
+    
+    private DefaultChainFactory defaultChainFactory;
     
     public AbstractRaffleStrategy(IStrategyRepository repository, IStrategyDispatch strategyDispatch) {
         this.repository = repository;
@@ -49,16 +50,14 @@ public abstract class AbstractRaffleStrategy implements IRaffleStrategy {
             throw new AppException(ResponseCode.ILLEGAL_PARAMETER.getCode(), ResponseCode.ILLEGAL_PARAMETER.getInfo());
         }
         
-        // 2. 策略查询-从抽奖策略表strategy中查出抽奖的策略
+        /* // 2. 策略查询-从抽奖策略表strategy中查出抽奖的策略
         StrategyEntity strategy = repository.queryStrategyEntityByStrategyId(strategyId);
-        
         // 3. 抽奖前 - 规则过滤
         RuleActionEntity<RuleActionEntity.RaffleBeforeEntity> ruleActionEntity =
                 this.doCheckRaffleBeforeLogic(RaffleFactorEntity.builder()
                         .userId(userId)
                         .strategyId(strategyId)
                         .build(), strategy.ruleModels());
-        
         // 后续流程受规则引擎影响
         if (RuleLogicCheckTypeVO.TAKE_OVER.getCode().equals(ruleActionEntity.getCode())) {
             if (DefaultLogicFactory.LogicModel.RULE_BLACKLIST.getCode().equals(ruleActionEntity.getRuleModel())) {
@@ -76,15 +75,19 @@ public abstract class AbstractRaffleStrategy implements IRaffleStrategy {
                         .build();
             }
         }
-        
         // 4. 默认抽奖流程-先得到奖品枚举列表的长度,然后随机生成一个数,表示抽奖抽中了这个数,返回奖品的id
-        Integer awardId = strategyDispatch.getRandomAwardId(strategyId);
+        Integer awardId = strategyDispatch.getRandomAwardId(strategyId); */
         
-        // 5. 查询奖品规则「抽奖中（拿到奖品ID时，过滤规则）、抽奖后（扣减完奖品库存后过滤，抽奖中拦截和无库存则走兜底）」
+        // 2.责任链处理抽奖
+        ILogicChain logicChain = defaultChainFactory.openLogicChain(strategyId);
+        
+        Integer awardId = logicChain.logic(userId, strategyId);
+        
+        // 3. 查询奖品规则「抽奖中（拿到奖品ID时，过滤规则）、抽奖后（扣减完奖品库存后过滤，抽奖中拦截和无库存则走兜底）」
         StrategyAwardRuleModelVO strategyAwardRuleModelVO = repository.queryStrategyAwardRuleModelVO(strategyId,
                 awardId);
         
-        // 6. 抽奖
+        // 4. 抽奖中 - 规则过滤
         RuleActionEntity<RuleActionEntity.RaffleCenterEntity> ruleActionCenterEntity = this.doCheckRaffleCenterLogic(
                 RaffleFactorEntity.builder().userId(userId).strategyId(strategyId).awardId(awardId).build(),
                 strategyAwardRuleModelVO.raffleCenterRuleModelList());

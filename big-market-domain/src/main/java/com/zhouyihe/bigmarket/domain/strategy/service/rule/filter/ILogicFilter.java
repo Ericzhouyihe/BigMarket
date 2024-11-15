@@ -1,4 +1,4 @@
-package com.zhouyihe.bigmarket.domain.strategy.service.rule;
+package com.zhouyihe.bigmarket.domain.strategy.service.rule.filter;
 
 import com.zhouyihe.bigmarket.domain.strategy.model.entity.RuleActionEntity;
 import com.zhouyihe.bigmarket.domain.strategy.model.entity.RuleMatterEntity;

@@ -19,7 +19,8 @@ public interface IStrategyRepository {
     
     List<StrategyAwardEntity> queryStrategyAwardList(Long strategyId);
     
-    void storeStrategyAwardSearchRateTable(String key, Integer rateRange, Map<Integer, Integer> strategyAwardSearchRateTable);
+    void storeStrategyAwardSearchRateTable(String key, Integer rateRange,
+                                           Map<Integer, Integer> strategyAwardSearchRateTable);
     
     Integer getStrategyAwardAssemble(String key, Integer rateKey);
     
@@ -30,6 +31,8 @@ public interface IStrategyRepository {
     StrategyEntity queryStrategyEntityByStrategyId(Long strategyId);
     
     StrategyRuleEntity queryStrategyRule(Long strategyId, String ruleModel);
+    
+    String queryStrategyRuleValue(Long strategyId, String ruleModel);
     
     String queryStrategyRuleValue(Long strategyId, Integer awardId, String ruleModel);
     

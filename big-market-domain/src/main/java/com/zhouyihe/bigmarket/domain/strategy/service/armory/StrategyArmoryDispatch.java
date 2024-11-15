@@ -120,6 +120,12 @@ public class StrategyArmoryDispatch implements IStrategyArmory, IStrategyDispatc
         return repository.getStrategyAwardAssemble(String.valueOf(strategyId), new SecureRandom().nextInt(rateRange));
     }
     
+    /**
+     * 根据权重规则的值进行抽取随机结果
+     * @param strategyId
+     * @param ruleWeightValue
+     * @return
+     */
     @Override
     public Integer getRandomAwardId(Long strategyId, String ruleWeightValue) {
         // 组装key

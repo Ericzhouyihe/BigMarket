@@ -1,12 +1,12 @@
-package com.zhouyihe.bigmarket.domain.strategy.service.rule.impl;
+package com.zhouyihe.bigmarket.domain.strategy.service.rule.filter.impl;
 
 import com.zhouyihe.bigmarket.domain.strategy.model.entity.RuleActionEntity;
 import com.zhouyihe.bigmarket.domain.strategy.model.entity.RuleMatterEntity;
 import com.zhouyihe.bigmarket.domain.strategy.model.valobj.RuleLogicCheckTypeVO;
 import com.zhouyihe.bigmarket.domain.strategy.repository.IStrategyRepository;
 import com.zhouyihe.bigmarket.domain.strategy.service.annotation.LogicStrategy;
-import com.zhouyihe.bigmarket.domain.strategy.service.rule.ILogicFilter;
-import com.zhouyihe.bigmarket.domain.strategy.service.rule.factory.DefaultLogicFactory;
+import com.zhouyihe.bigmarket.domain.strategy.service.rule.filter.ILogicFilter;
+import com.zhouyihe.bigmarket.domain.strategy.service.rule.filter.factory.DefaultLogicFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -30,7 +30,7 @@ public class RuleLockLogicFilter implements ILogicFilter<RuleActionEntity.Raffle
     
     @Override
     public RuleActionEntity<RuleActionEntity.RaffleCenterEntity> filter(RuleMatterEntity ruleMatterEntity) {
-        log.info("规则过滤-次数锁 userId:{} strategyId:{} ruleModel:{}", ruleMatterEntity.getUserId(),
+        log.info("规则过滤-权重范围 userId:{} strategyId:{} ruleModel:{}", ruleMatterEntity.getUserId(),
                 ruleMatterEntity.getStrategyId(), ruleMatterEntity.getRuleModel());
         
         // 查询配置值

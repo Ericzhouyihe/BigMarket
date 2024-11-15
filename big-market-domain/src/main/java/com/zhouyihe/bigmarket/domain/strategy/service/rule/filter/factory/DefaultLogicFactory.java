@@ -1,9 +1,9 @@
-package com.zhouyihe.bigmarket.domain.strategy.service.rule.factory;
+package com.zhouyihe.bigmarket.domain.strategy.service.rule.filter.factory;
 
 import com.alibaba.fastjson2.util.AnnotationUtils;
 import com.zhouyihe.bigmarket.domain.strategy.model.entity.RuleActionEntity;
 import com.zhouyihe.bigmarket.domain.strategy.service.annotation.LogicStrategy;
-import com.zhouyihe.bigmarket.domain.strategy.service.rule.ILogicFilter;
+import com.zhouyihe.bigmarket.domain.strategy.service.rule.filter.ILogicFilter;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.stereotype.Service;
