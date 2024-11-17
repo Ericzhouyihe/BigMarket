@@ -42,17 +42,31 @@ public class RaffleStrategyTest {
     @Before
     public void setup() {
         log.info("测试结果:{}", strategyArmory.assembleLotteryStrategy(100001L));
-        log.info("测试结果:{}", strategyArmory.assembleLotteryStrategy(100002L));
-        log.info("测试结果:{}", strategyArmory.assembleLotteryStrategy(100003L));
+        // log.info("测试结果:{}", strategyArmory.assembleLotteryStrategy(100002L));
+        // log.info("测试结果:{}", strategyArmory.assembleLotteryStrategy(100003L));
+        log.info("测试结果:{}", strategyArmory.assembleLotteryStrategy(100006L));
         
         ReflectionTestUtils.setField(ruleWeightLogicFilter, "userScore", 4500L);
         ReflectionTestUtils.setField(ruleLockLogicFilter, "userRaffleCount", 0L);
     }
     
     @Test
-    public void test_preformRaffle_blacklist() {
+    public void test_performance(){
         RaffleFactorEntity raffleFactorEntity = RaffleFactorEntity.builder()
                 .userId("zhouyihe")
+                .strategyId(100006L)
+                .build();
+        
+        RaffleAwardEntity raffleAwardEntity = raffleStrategy.performRaffle(raffleFactorEntity);
+        
+        log.info("请求参数: {}", JSON.toJSON(raffleFactorEntity));
+        log.info("测试结果: {}", JSON.toJSON(raffleAwardEntity));
+    }
+    
+    @Test
+    public void test_preformRaffle_blacklist() {
+        RaffleFactorEntity raffleFactorEntity = RaffleFactorEntity.builder()
+                .userId("user003")  // 黑名单用户 user001 user002 user003
                 .strategyId(100001L)
                 .build();
         
@@ -66,7 +80,7 @@ public class RaffleStrategyTest {
     public void test_raffle_center_rule_lock() {
         RaffleFactorEntity raffleFactorEntity = RaffleFactorEntity.builder()
                 .userId("zhouyihe")
-                .strategyId(100003L)
+                .strategyId(100006L)
                 .build();
         
         RaffleAwardEntity raffleAwardEntity = raffleStrategy.performRaffle(raffleFactorEntity);

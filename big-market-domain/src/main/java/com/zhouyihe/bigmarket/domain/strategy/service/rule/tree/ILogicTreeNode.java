@@ -9,5 +9,4 @@ import com.zhouyihe.bigmarket.domain.strategy.service.rule.tree.factory.DefaultT
  */
 public interface ILogicTreeNode {
     DefaultTreeFactory.TreeActionEntity logic(String userId, Long strategyId, Integer awardId);
-    
 }

@@ -1,7 +1,6 @@
 package com.zhouyihe.bigmarket.domain.strategy.service.rule.tree.factory;
 
 import com.zhouyihe.bigmarket.domain.strategy.model.valobj.RuleLogicCheckTypeVO;
-import com.zhouyihe.bigmarket.domain.strategy.model.valobj.RuleTreeNodeVO;
 import com.zhouyihe.bigmarket.domain.strategy.model.valobj.RuleTreeVO;
 import com.zhouyihe.bigmarket.domain.strategy.service.rule.tree.ILogicTreeNode;
 import com.zhouyihe.bigmarket.domain.strategy.service.rule.tree.factory.engine.IDecisionTreeEngine;
@@ -44,7 +43,7 @@ public class DefaultTreeFactory {
         //
         private RuleLogicCheckTypeVO ruleLogicCheckType;
         // 奖励数据
-        private StrategyAwardData strategyAwardData;
+        private StrategyAwardVO strategyAwardVO;
     }
     
     
@@ -52,7 +51,7 @@ public class DefaultTreeFactory {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class StrategyAwardData {
+    public static class StrategyAwardVO {
         /** 抽奖奖品ID - 内部流转使用 */
         private Integer awardId;
         /** 抽奖奖品规则 */

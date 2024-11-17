@@ -1,5 +1,7 @@
 package com.zhouyihe.bigmarket.domain.strategy.service.rule.chain;
 
+import com.zhouyihe.bigmarket.domain.strategy.service.rule.chain.factory.DefaultChainFactory;
+
 /**
  * @author ZhouYihe 1552951165@qq.com
  * @create 2024/11/14 13:11
@@ -13,6 +15,6 @@ public interface ILogicChain extends ILoginChainArmory {
      * @param strategyId 策略ID
      * @return 奖品ID
      */
-    Integer logic(String userId, Long strategyId);
+    DefaultChainFactory.StrategyAwardVO logic(String userId, Long strategyId);
     
 }

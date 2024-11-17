@@ -18,6 +18,11 @@ public interface IStrategyAwardDao {
     
     List<StrategyAward> queryAwardList();
     
+    /**
+     * 根据抽奖策略id查询
+     * @param strategyId
+     * @return
+     */
     List<StrategyAward> queryStrategyAwardListByStrategyId(Long strategyId);
     
     String queryStrategyAwardRuleModels(StrategyAward strategyAward);
