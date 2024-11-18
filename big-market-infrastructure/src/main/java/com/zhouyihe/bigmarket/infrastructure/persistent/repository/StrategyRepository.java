@@ -9,6 +9,9 @@ import com.zhouyihe.bigmarket.infrastructure.persistent.dao.*;
 import com.zhouyihe.bigmarket.infrastructure.persistent.po.*;
 import com.zhouyihe.bigmarket.infrastructure.persistent.redis.IRedisService;
 import com.zhouyihe.bigmarket.types.common.Constants;
+import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RBlockingQueue;
+import org.redisson.api.RDelayedQueue;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
@@ -16,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @ClassName StrategyRepository
@@ -24,6 +28,7 @@ import java.util.Map;
  * @date: 2024/9/7
  * @description: 策略服务仓储实现
  */
+@Slf4j
 @Repository
 public class StrategyRepository implements IStrategyRepository {
     @Resource
@@ -102,7 +107,8 @@ public class StrategyRepository implements IStrategyRepository {
         if (strategyEntity != null) return strategyEntity;
         
         Strategy strategy = strategyDao.queryStrategyByStrategyId(strategyId);
-        if (null == strategy) return StrategyEntity.builder().build();
+        if (null == strategy) return StrategyEntity.builder()
+                .build();
         strategyEntity = StrategyEntity.builder()
                 .strategyId(strategy.getStrategyId())
                 .strategyDesc(strategy.getStrategyDesc())
@@ -135,6 +141,7 @@ public class StrategyRepository implements IStrategyRepository {
     
     /**
      * 查询抽奖规则的比值信息
+     *
      * @param strategyId
      * @param awardId
      * @param ruleModel
@@ -152,6 +159,7 @@ public class StrategyRepository implements IStrategyRepository {
     
     /**
      * 根据 抽奖策略id 和 奖品id 查询对应的规则模型
+     *
      * @param strategyId
      * @param awardId
      * @return
@@ -162,11 +170,14 @@ public class StrategyRepository implements IStrategyRepository {
         strategyAward.setStrategyId(strategyId);
         strategyAward.setAwardId(awardId);
         String ruleModels = strategyAwardDao.queryStrategyAwardRuleModels(strategyAward);
-        return StrategyAwardRuleModelVO.builder().ruleModels(ruleModels).build();
+        return StrategyAwardRuleModelVO.builder()
+                .ruleModels(ruleModels)
+                .build();
     }
     
     /**
      * 通过树id生产对应的规则树
+     *
      * @param treeId 树id
      * @return 规则树对象
      */
@@ -223,6 +234,80 @@ public class StrategyRepository implements IStrategyRepository {
         redisService.setValue(cacheKey, ruleTreeVO);
         
         return ruleTreeVO;
+    }
+    
+    /**
+     * 缓存商品库存
+     *
+     * @param cacheKey
+     * @param awardCount
+     */
+    @Override
+    public void cacheStrategyAwardCount(String cacheKey, Integer awardCount) {
+        // Long cacheAwardcCount = redisService.getAtomicLong(cacheKey);
+        // if (cacheAwardcCount != null) return;
+        if (redisService.isExists(cacheKey)) return;
+        redisService.setAtomicLong(cacheKey, awardCount);
+    }
+    
+    /**
+     * 扣减库存
+     *
+     * @param cacheKey
+     * @return
+     */
+    @Override
+    public Boolean subtractionAwardStock(String cacheKey) {
+        long surplus = redisService.decr(cacheKey);
+        if (surplus < 0) {
+            redisService.setValue(cacheKey, 0);
+            return false;
+        }
+        String lockKey = cacheKey + Constants.UNDERLINE + surplus;
+        Boolean lock = redisService.setNx(lockKey);
+        if (!lock) {
+            log.info("策略奖品库存加锁失败 {}", lockKey);
+        }
+        return true;
+    }
+    
+    /**
+     * 通过延迟队列对数据库的库存进行扣减
+     *
+     * @param strategyAwardStockKeyVO
+     */
+    @Override
+    public void awardStockConsumeSendQueue(StrategyAwardStockKeyVO strategyAwardStockKeyVO) {
+        String cacheKey = Constants.RedisKey.STRATEGY_AWARD_COUNT_QUEUE_KEY;
+        RBlockingQueue<StrategyAwardStockKeyVO> blockingQueue = redisService.getBlockingQueue(cacheKey);
+        RDelayedQueue<StrategyAwardStockKeyVO> delayedQueue = redisService.getDelayedQueue(blockingQueue);
+        delayedQueue.offer(strategyAwardStockKeyVO, 3, TimeUnit.SECONDS);
+    }
+    
+    /**
+     * 获取奖品库存消耗队列
+     *
+     * @return
+     */
+    @Override
+    public StrategyAwardStockKeyVO takeQueueValue() {
+        String cacheKey = Constants.RedisKey.STRATEGY_AWARD_COUNT_QUEUE_KEY;
+        RBlockingQueue<StrategyAwardStockKeyVO> destinationQueue = redisService.getBlockingQueue(cacheKey);
+        return destinationQueue.poll();
+    }
+    
+    /**
+     * 更新奖品库存消耗记录
+     *
+     * @param strategyId
+     * @param awardId
+     */
+    @Override
+    public void updateStrategyAwardStock(Long strategyId, Integer awardId) {
+        StrategyAward strategyAward = new StrategyAward();
+        strategyAward.setStrategyId(strategyId);
+        strategyAward.setAwardId(awardId);
+        strategyAwardDao.updateStrategyAwardStock(strategyAward);
     }
     
 }

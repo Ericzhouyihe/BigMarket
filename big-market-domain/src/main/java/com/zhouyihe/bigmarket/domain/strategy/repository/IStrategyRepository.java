@@ -5,6 +5,7 @@ import com.zhouyihe.bigmarket.domain.strategy.model.entity.StrategyEntity;
 import com.zhouyihe.bigmarket.domain.strategy.model.entity.StrategyRuleEntity;
 import com.zhouyihe.bigmarket.domain.strategy.model.valobj.RuleTreeVO;
 import com.zhouyihe.bigmarket.domain.strategy.model.valobj.StrategyAwardRuleModelVO;
+import com.zhouyihe.bigmarket.domain.strategy.model.valobj.StrategyAwardStockKeyVO;
 
 import java.util.List;
 import java.util.Map;
@@ -58,4 +59,37 @@ public interface IStrategyRepository {
      * @return 规则树对象
      */
     RuleTreeVO queryRuleTreeVOByTreeId(String treeId);
+    
+    /**
+     * 缓存商品库存
+     * @param cacheKey
+     * @param awardCount
+     */
+    void cacheStrategyAwardCount(String cacheKey, Integer awardCount);
+    
+    /**
+     * 扣减库存
+     * @param cacheKey
+     * @return
+     */
+    Boolean subtractionAwardStock(String cacheKey);
+    
+    /**
+     * 通过延迟队列对数据库的库存进行扣减
+     * @param strategyAwardStockKeyVO
+     */
+    void awardStockConsumeSendQueue(StrategyAwardStockKeyVO strategyAwardStockKeyVO);
+    
+    /**
+     * 获取奖品库存消耗队列
+     * @return
+     */
+    StrategyAwardStockKeyVO takeQueueValue();
+    
+    /**
+     * 更新奖品库存消耗记录
+     * @param strategyId
+     * @param awardId
+     */
+    void updateStrategyAwardStock(Long strategyId, Integer awardId);
 }

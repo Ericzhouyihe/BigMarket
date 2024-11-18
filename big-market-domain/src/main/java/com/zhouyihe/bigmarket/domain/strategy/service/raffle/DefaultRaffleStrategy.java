@@ -2,6 +2,7 @@ package com.zhouyihe.bigmarket.domain.strategy.service.raffle;
 
 import com.zhouyihe.bigmarket.domain.strategy.model.valobj.RuleTreeVO;
 import com.zhouyihe.bigmarket.domain.strategy.model.valobj.StrategyAwardRuleModelVO;
+import com.zhouyihe.bigmarket.domain.strategy.model.valobj.StrategyAwardStockKeyVO;
 import com.zhouyihe.bigmarket.domain.strategy.repository.IStrategyRepository;
 import com.zhouyihe.bigmarket.domain.strategy.service.AbstractRaffleStrategy;
 import com.zhouyihe.bigmarket.domain.strategy.service.armory.IStrategyDispatch;
@@ -72,6 +73,28 @@ public class DefaultRaffleStrategy extends AbstractRaffleStrategy {
         IDecisionTreeEngine treeEngine = defaultTreeFactory.openLogicTree(ruleTreeVO);
         // 返回结果
         return treeEngine.process(userId, strategyId, awardId);
+    }
+    
+    /**
+     * 获取奖品库存消耗队列
+     *
+     * @return 奖品库存Key信息
+     * @throws InterruptedException 异常
+     */
+    @Override
+    public StrategyAwardStockKeyVO takeQueueValue() throws InterruptedException {
+        return repository.takeQueueValue();
+    }
+    
+    /**
+     * 更新奖品库存消耗记录
+     *
+     * @param strategyId 策略ID
+     * @param awardId    奖品ID
+     */
+    @Override
+    public void updateStrategyAwardStock(Long strategyId, Integer awardId) {
+        repository.updateStrategyAwardStock(strategyId,awardId);
     }
     
     // 两个遗弃的方法

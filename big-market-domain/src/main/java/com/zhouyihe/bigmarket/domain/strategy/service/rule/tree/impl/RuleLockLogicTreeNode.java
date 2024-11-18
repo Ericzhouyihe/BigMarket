@@ -1,14 +1,10 @@
 package com.zhouyihe.bigmarket.domain.strategy.service.rule.tree.impl;
 
 import com.zhouyihe.bigmarket.domain.strategy.model.valobj.RuleLogicCheckTypeVO;
-import com.zhouyihe.bigmarket.domain.strategy.repository.IStrategyRepository;
-import com.zhouyihe.bigmarket.domain.strategy.service.rule.filter.factory.DefaultLogicFactory;
 import com.zhouyihe.bigmarket.domain.strategy.service.rule.tree.ILogicTreeNode;
 import com.zhouyihe.bigmarket.domain.strategy.service.rule.tree.factory.DefaultTreeFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.Resource;
 
 /**
  * @author ZhouYihe 1552951165@qq.com
@@ -19,31 +15,31 @@ import javax.annotation.Resource;
 @Component("rule_lock")
 public class RuleLockLogicTreeNode implements ILogicTreeNode {
     
-    @Resource
-    private IStrategyRepository repository;
-    
-    // 用户抽奖次数
-    private Long userRaffleCount = 0L;
+    // 用户抽奖次数，后续完成这部分流程开发的时候，从数据库/Redis中读取
+    private Long userRaffleCount = 10L;
     
     @Override
-    public DefaultTreeFactory.TreeActionEntity logic(String userId, Long strategyId, Integer awardId) {
+    public DefaultTreeFactory.TreeActionEntity logic(String userId, Long strategyId, Integer awardId,
+                                                     String ruleValue) {
         
-        log.info("规则过滤-权重范围 userId:{} strategyId:{} ruleModel:{}", userId, strategyId,
-                DefaultLogicFactory.LogicModel.RULE_LOCK);
+        log.info("规则过滤-次数锁 userId:{} strategyId:{} awardId:{} ruleValue:{}", userId, strategyId, awardId,
+                 ruleValue);
         
-        // 查询配置值
-        String ruleValue = repository.queryStrategyRuleValue(strategyId, Integer.valueOf(userId),
-                DefaultLogicFactory.LogicModel.RULE_LOCK.getCode());
+        long raffleCount = 0L;
+        try {
+            raffleCount = Long.parseLong(ruleValue);
+        } catch (Exception e) {
+            throw new RuntimeException("规则过滤-次数锁异常 ruleValue: " + ruleValue + " 配置不正确");
+        }
         
-        long raffleCount = Long.parseLong(ruleValue);
-        
-        // 用户抽奖次数 大与等于 配置值 放行进行后续的流程
+        // 用户抽奖次数大于等于规则限定值，规则放行
         if (userRaffleCount >= raffleCount) {
             return DefaultTreeFactory.TreeActionEntity.builder()
                     .ruleLogicCheckType(RuleLogicCheckTypeVO.ALLOW)
                     .build();
         }
         
+        // 用户抽奖次数小于规则限定值，规则拦截
         return DefaultTreeFactory.TreeActionEntity.builder()
                 .ruleLogicCheckType(RuleLogicCheckTypeVO.TAKE_OVER)
                 .build();

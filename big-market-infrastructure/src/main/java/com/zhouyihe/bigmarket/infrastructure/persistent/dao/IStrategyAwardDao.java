@@ -1,6 +1,5 @@
 package com.zhouyihe.bigmarket.infrastructure.persistent.dao;
 
-import com.zhouyihe.bigmarket.infrastructure.persistent.po.Award;
 import com.zhouyihe.bigmarket.infrastructure.persistent.po.StrategyAward;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -20,10 +19,18 @@ public interface IStrategyAwardDao {
     
     /**
      * 根据抽奖策略id查询
+     *
      * @param strategyId
      * @return
      */
     List<StrategyAward> queryStrategyAwardListByStrategyId(Long strategyId);
     
     String queryStrategyAwardRuleModels(StrategyAward strategyAward);
+    
+    /**
+     * 更新数据库库存
+     *
+     * @param strategyAward
+     */
+    void updateStrategyAwardStock(StrategyAward strategyAward);
 }

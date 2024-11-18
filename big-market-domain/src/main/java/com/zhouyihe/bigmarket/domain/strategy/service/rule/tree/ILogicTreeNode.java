@@ -8,5 +8,13 @@ import com.zhouyihe.bigmarket.domain.strategy.service.rule.tree.factory.DefaultT
  * @description 规则树接口
  */
 public interface ILogicTreeNode {
-    DefaultTreeFactory.TreeActionEntity logic(String userId, Long strategyId, Integer awardId);
+    /**
+     *
+     * @param userId
+     * @param strategyId
+     * @param awardId
+     * @param ruleValue
+     * @return
+     */
+    DefaultTreeFactory.TreeActionEntity logic(String userId, Long strategyId, Integer awardId, String ruleValue);
 }
