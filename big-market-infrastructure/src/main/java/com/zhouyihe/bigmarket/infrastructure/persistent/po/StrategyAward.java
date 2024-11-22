@@ -1,5 +1,7 @@
 package com.zhouyihe.bigmarket.infrastructure.persistent.po;
 
+import com.zhouyihe.bigmarket.domain.strategy.model.entity.StrategyAwardEntity;
+import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -13,6 +15,7 @@ import java.util.Date;
  * @description: 抽奖策略奖品明细配置 - 概率、规则
  */
 @Data
+@AutoMapper(target = StrategyAwardEntity.class)
 public class StrategyAward {
     /**
      * 自增ID

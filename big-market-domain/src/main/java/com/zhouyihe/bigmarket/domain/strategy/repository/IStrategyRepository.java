@@ -19,6 +19,11 @@ import java.util.Map;
  */
 public interface IStrategyRepository {
     
+    /**
+     * 根据策略id查询奖品信息
+     * @param strategyId
+     * @return
+     */
     List<StrategyAwardEntity> queryStrategyAwardList(Long strategyId);
     
     void storeStrategyAwardSearchRateTable(String key, Integer rateRange,
@@ -32,23 +37,29 @@ public interface IStrategyRepository {
     
     StrategyEntity queryStrategyEntityByStrategyId(Long strategyId);
     
+    /**
+     * 获取抽奖规则类型为rule_weight的抽奖规则
+     * @param strategyId 策略id
+     * @param ruleModel "rule_weight"
+     * @return
+     */
     StrategyRuleEntity queryStrategyRule(Long strategyId, String ruleModel);
     
     String queryStrategyRuleValue(Long strategyId, String ruleModel);
     
     /**
      * 查询抽奖规则的比值信息
-     * @param strategyId
-     * @param awardId
-     * @param ruleModel
+     * @param strategyId 抽奖策略id
+     * @param awardId 奖品id
+     * @param ruleModel 策略模型
      * @return
      */
     String queryStrategyRuleValue(Long strategyId, Integer awardId, String ruleModel);
     
     /**
      * 根据 抽奖策略id 和 奖品id 查询对应的规则模型
-     * @param strategyId
-     * @param awardId
+     * @param strategyId 抽奖策略id
+     * @param awardId 奖品id
      * @return
      */
     StrategyAwardRuleModelVO queryStrategyAwardRuleModelVO(Long strategyId, Integer awardId);
@@ -88,8 +99,16 @@ public interface IStrategyRepository {
     
     /**
      * 更新奖品库存消耗记录
-     * @param strategyId
-     * @param awardId
+     * @param strategyId 策略id
+     * @param awardId 奖品id
      */
     void updateStrategyAwardStock(Long strategyId, Integer awardId);
+    
+    /**
+     * 根据策略id和奖品id查找对应的策略奖品信息
+     * @param strategyId 策略id
+     * @param awardId 奖品id
+     * @return StrategyAward
+     */
+    StrategyAwardEntity queryStrategyAwardEntity(Long strategyId, Integer awardId);
 }

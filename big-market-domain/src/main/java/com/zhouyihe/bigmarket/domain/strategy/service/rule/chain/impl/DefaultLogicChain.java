@@ -40,6 +40,7 @@ public class DefaultLogicChain extends AbstractLogicChain {
     
     @Override
     protected String ruleModel() {
+        // rule_default
         return DefaultChainFactory.LogicModel.RULE_DEFAULT.getCode();
     }
 }

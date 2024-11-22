@@ -1,5 +1,7 @@
 package com.zhouyihe.bigmarket.domain.strategy.model.entity;
 
+import com.zhouyihe.bigmarket.api.dto.RaffleAwardListResponseDTO;
+import io.github.linpeilie.annotations.AutoMapper;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,27 +19,24 @@ import java.math.BigDecimal;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class StrategyAwardEntity{
-    /**
-     * 抽奖策略ID
-     */
+@AutoMapper(target = RaffleAwardListResponseDTO.class)
+public class StrategyAwardEntity {
+    
+    // 抽奖策略ID
     private Long strategyId;
-    
-    /**
-     * 抽奖奖品ID - 内部流转使用
-     */
+    // 抽奖奖品ID - 内部流转使用
     private Integer awardId;
-    /**
-     * 奖品库存总量
-     */
+    // 抽奖奖品标题
+    private String awardTitle;
+    // 抽奖奖品副标题
+    private String awardSubtitle;
+    // 奖品库存总量
     private Integer awardCount;
-    /**
-     * 奖品库存剩余
-     */
+    // 奖品库存剩余
     private Integer awardCountSurplus;
-    
-    /**
-     * 奖品中奖概率
-     */
+    // 奖品中奖概率
     private BigDecimal awardRate;
+    // 排序
+    private Integer sort;
+    
 }

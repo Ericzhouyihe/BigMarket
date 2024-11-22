@@ -69,6 +69,7 @@ public class RedissonService implements IRedisService {
 
     @Override
     public long decr(String key) {
+        // 调用 decrementAndGet() 方法减少该键对应的值，并返回减少后的结果
         return redissonClient.getAtomicLong(key).decrementAndGet();
     }
 

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.zhouyihe.bigmarket</groupId>
@@ -13,6 +14,7 @@
         <module>big-market-trigger</module>
         <module>big-market-infrastructure</module>
         <module>big-market-types</module>
+        <module>big-market-api</module>
     </modules>
 
     <repositories>
@@ -119,6 +121,18 @@
                 <artifactId>redisson-spring-boot-starter</artifactId>
                 <version>3.23.4</version>
             </dependency>
+            <!-- lombok -->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>1.18.24</version>
+            </dependency>
+            <!-- mapstruct-plus -->
+            <dependency>
+                <groupId>io.github.linpeilie</groupId>
+                <artifactId>mapstruct-plus-spring-boot-starter</artifactId>
+                <version>1.4.6</version>
+            </dependency>
 
             <!-- 工程模块 -->
             <dependency>
@@ -146,6 +160,35 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <annotationProcessorPaths>
+                        <!-- Lombok 在编译时会通过这个插件生成代码 -->
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>1.18.24</version>
+                        </path>
+                        <!-- MapStruct 在编译时会通过这个插件生成代码 -->
+                        <path>
+                            <groupId>io.github.linpeilie</groupId>
+                            <artifactId>mapstruct-plus-processor</artifactId>
+                            <version>1.4.6</version>
+                        </path>
+                        <!--在lombok 1.18.16及以上需要使用-->
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok-mapstruct-binding</artifactId>
+                            <version>0.2.0</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -179,21 +222,36 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <java_jvm>-Xms1G -Xmx1G -server  -XX:MaxPermSize=256M -Xss256K -Dspring.profiles.active=test -XX:+DisableExplicitGC -XX:+UseG1GC  -XX:LargePageSizeInBytes=128m -XX:+UseFastAccessorMethods -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/export/Logs/big-market-boot -Xloggc:/export/Logs/big-market-boot/gc-big-market-boot.log -XX:+PrintGCDetails -XX:+PrintGCDateStamps</java_jvm>
+                <java_jvm>-Xms1G -Xmx1G -server -XX:MaxPermSize=256M -Xss256K -Dspring.profiles.active=test
+                    -XX:+DisableExplicitGC -XX:+UseG1GC -XX:LargePageSizeInBytes=128m -XX:+UseFastAccessorMethods
+                    -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/export/Logs/big-market-boot
+                    -Xloggc:/export/Logs/big-market-boot/gc-big-market-boot.log -XX:+PrintGCDetails
+                    -XX:+PrintGCDateStamps
+                </java_jvm>
                 <profileActive>dev</profileActive>
             </properties>
         </profile>
         <profile>
             <id>test</id>
             <properties>
-                <java_jvm>-Xms1G -Xmx1G -server  -XX:MaxPermSize=256M -Xss256K -Dspring.profiles.active=test -XX:+DisableExplicitGC -XX:+UseG1GC  -XX:LargePageSizeInBytes=128m -XX:+UseFastAccessorMethods -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/export/Logs/big-market-boot -Xloggc:/export/Logs/big-market-boot/gc-big-market-boot.log -XX:+PrintGCDetails -XX:+PrintGCDateStamps</java_jvm>
+                <java_jvm>-Xms1G -Xmx1G -server -XX:MaxPermSize=256M -Xss256K -Dspring.profiles.active=test
+                    -XX:+DisableExplicitGC -XX:+UseG1GC -XX:LargePageSizeInBytes=128m -XX:+UseFastAccessorMethods
+                    -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/export/Logs/big-market-boot
+                    -Xloggc:/export/Logs/big-market-boot/gc-big-market-boot.log -XX:+PrintGCDetails
+                    -XX:+PrintGCDateStamps
+                </java_jvm>
                 <profileActive>test</profileActive>
             </properties>
         </profile>
         <profile>
             <id>prod</id>
             <properties>
-                <java_jvm>-Xms6G -Xmx6G -server  -XX:MaxPermSize=256M -Xss256K -Dspring.profiles.active=release -XX:+DisableExplicitGC -XX:+UseG1GC  -XX:LargePageSizeInBytes=128m -XX:+UseFastAccessorMethods -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/export/Logs/fq-mall-activity-app -Xloggc:/export/Logs/big-market-boot/gc-big-market-boot.log -XX:+PrintGCDetails -XX:+PrintGCDateStamps</java_jvm>
+                <java_jvm>-Xms6G -Xmx6G -server -XX:MaxPermSize=256M -Xss256K -Dspring.profiles.active=release
+                    -XX:+DisableExplicitGC -XX:+UseG1GC -XX:LargePageSizeInBytes=128m -XX:+UseFastAccessorMethods
+                    -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/export/Logs/fq-mall-activity-app
+                    -Xloggc:/export/Logs/big-market-boot/gc-big-market-boot.log -XX:+PrintGCDetails
+                    -XX:+PrintGCDateStamps
+                </java_jvm>
                 <profileActive>prod</profileActive>
             </properties>
         </profile>

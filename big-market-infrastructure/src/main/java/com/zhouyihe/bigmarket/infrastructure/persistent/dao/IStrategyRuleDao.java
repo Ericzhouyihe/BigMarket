@@ -18,6 +18,11 @@ public interface IStrategyRuleDao {
     
     List<StrategyRule> queryStrategyRuleList();
     
+    /**
+     * 根据strategyId(策略id)和规则模型查询对应的策略
+     * @param strategyRuleReq
+     * @return
+     */
     StrategyRule queryStrategyRule(StrategyRule strategyRuleReq);
     
     String queryStrategyRuleValue(StrategyRule strategyRuleReq);

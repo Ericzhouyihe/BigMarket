@@ -27,7 +27,7 @@ public class DefaultTreeFactory {
         this.logicTreeNodeGroup = logicTreeNodeGroup;
     }
     
-    public IDecisionTreeEngine openLogicTree(RuleTreeVO ruleTreeVO){
+    public IDecisionTreeEngine openLogicTree(RuleTreeVO ruleTreeVO) {
         return new DecisionTreeEngine(logicTreeNodeGroup, ruleTreeVO);
     }
     
@@ -40,7 +40,8 @@ public class DefaultTreeFactory {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class TreeActionEntity {
-        //
+        // ALLOW("0000", "放行；执行后续的流程，不受规则引擎影响"),
+        // TAKE_OVER("0001","接管；后续的流程，受规则引擎执行结果影响"),
         private RuleLogicCheckTypeVO ruleLogicCheckType;
         // 奖励数据
         private StrategyAwardVO strategyAwardVO;
@@ -52,9 +53,13 @@ public class DefaultTreeFactory {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class StrategyAwardVO {
-        /** 抽奖奖品ID - 内部流转使用 */
+        /**
+         * 抽奖奖品ID - 内部流转使用
+         */
         private Integer awardId;
-        /** 抽奖奖品规则 */
+        /**
+         * 抽奖奖品规则
+         */
         private String awardRuleValue;
     }
 }

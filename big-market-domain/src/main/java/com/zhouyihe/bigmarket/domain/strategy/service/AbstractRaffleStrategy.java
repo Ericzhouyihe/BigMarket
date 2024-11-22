@@ -2,6 +2,7 @@ package com.zhouyihe.bigmarket.domain.strategy.service;
 
 import com.zhouyihe.bigmarket.domain.strategy.model.entity.RaffleAwardEntity;
 import com.zhouyihe.bigmarket.domain.strategy.model.entity.RaffleFactorEntity;
+import com.zhouyihe.bigmarket.domain.strategy.model.entity.StrategyAwardEntity;
 import com.zhouyihe.bigmarket.domain.strategy.repository.IStrategyRepository;
 import com.zhouyihe.bigmarket.domain.strategy.service.armory.IStrategyDispatch;
 import com.zhouyihe.bigmarket.domain.strategy.service.rule.chain.factory.DefaultChainFactory;
@@ -18,7 +19,7 @@ import org.apache.commons.lang3.StringUtils;
  * @description: 抽奖策略抽象类，定义抽奖的标准流程
  */
 @Slf4j
-public abstract class AbstractRaffleStrategy implements IRaffleStrategy,IRaffleStock {
+public abstract class AbstractRaffleStrategy implements IRaffleStrategy {
     
     protected final DefaultTreeFactory defaultTreeFactory;
     protected final DefaultChainFactory defaultChainFactory;
@@ -30,11 +31,20 @@ public abstract class AbstractRaffleStrategy implements IRaffleStrategy,IRaffleS
     protected IStrategyDispatch strategyDispatch;
     
     public AbstractRaffleStrategy(DefaultChainFactory defaultChainFactory, DefaultTreeFactory defaultTreeFactory,
-                                  IStrategyDispatch strategyDispatch, IStrategyRepository repository) {
+            IStrategyDispatch strategyDispatch, IStrategyRepository repository) {
         this.defaultChainFactory = defaultChainFactory;
         this.defaultTreeFactory = defaultTreeFactory;
         this.strategyDispatch = strategyDispatch;
         this.repository = repository;
+    }
+    
+    private RaffleAwardEntity buildRaffleAwardEntity(Long strategyId, Integer awardId, String awardConfig) {
+        StrategyAwardEntity strategyAward = repository.queryStrategyAwardEntity(strategyId, awardId);
+        return RaffleAwardEntity.builder()
+                .awardId(awardId)
+                .awardConfig(awardConfig)
+                .sort(strategyAward.getSort())
+                .build();
     }
     
     /**
@@ -45,7 +55,7 @@ public abstract class AbstractRaffleStrategy implements IRaffleStrategy,IRaffleS
      */
     @Override
     public RaffleAwardEntity performRaffle(RaffleFactorEntity raffleFactorEntity) {
-        // 1. 参数校验
+        // 1. 参数校验 校验userId和strategyId都不为空
         String userId = raffleFactorEntity.getUserId();
         Long strategyId = raffleFactorEntity.getStrategyId();
         if (null == strategyId || StringUtils.isBlank(userId)) {
@@ -56,12 +66,11 @@ public abstract class AbstractRaffleStrategy implements IRaffleStrategy,IRaffleS
         DefaultChainFactory.StrategyAwardVO chainStrategyAwardVO = raffleLogicChain(userId, strategyId);
         
         log.info("抽奖策略计算-责任链 userId:{} strategyId:{} awardId:{} LogicModel:{}", userId, strategyId,
-                chainStrategyAwardVO.getAwardId(),
-                chainStrategyAwardVO.getLogicModel());
-        if (!DefaultChainFactory.LogicModel.RULE_DEFAULT.getCode().equals(chainStrategyAwardVO.getLogicModel())) {
-            return RaffleAwardEntity.builder()
-                    .awardId(chainStrategyAwardVO.getAwardId())
-                    .build();
+                chainStrategyAwardVO.getAwardId(), chainStrategyAwardVO.getLogicModel());
+        if (!DefaultChainFactory.LogicModel.RULE_DEFAULT.getCode()
+                .equals(chainStrategyAwardVO.getLogicModel())) {
+            // todo awardConfig暂时为空,黑名单指定积分奖品,后续需要在库表中配置上对应黑名单的1积分,并获取到
+            return buildRaffleAwardEntity(strategyId, chainStrategyAwardVO.getAwardId(), null);
         }
         
         // 3. 规则树抽奖过滤【奖品ID，会根据抽奖次数判断、库存判断、兜底兜里返回最终的可获得奖品信息】
@@ -72,10 +81,8 @@ public abstract class AbstractRaffleStrategy implements IRaffleStrategy,IRaffleS
         
         
         // 4. 返回抽奖结果
-        return RaffleAwardEntity.builder()
-                .awardId(treeStrategyAwardVO.getAwardId())
-                .awardConfig(treeStrategyAwardVO.getAwardRuleValue())
-                .build();
+        return buildRaffleAwardEntity(strategyId, treeStrategyAwardVO.getAwardId(),
+                treeStrategyAwardVO.getAwardRuleValue());
         
         /* // 2. 策略查询-从抽奖策略表strategy中查出抽奖的策略
         StrategyEntity strategy = repository.queryStrategyEntityByStrategyId(strategyId);

@@ -25,6 +25,11 @@ public interface IStrategyAwardDao {
      */
     List<StrategyAward> queryStrategyAwardListByStrategyId(Long strategyId);
     
+    /**
+     * 根据策略id和奖品id查询对应的rule_models
+     * @param strategyAward
+     * @return
+     */
     String queryStrategyAwardRuleModels(StrategyAward strategyAward);
     
     /**
@@ -33,4 +38,12 @@ public interface IStrategyAwardDao {
      * @param strategyAward
      */
     void updateStrategyAwardStock(StrategyAward strategyAward);
+    
+    /**
+     * 查询所有符合的策略奖品
+     *
+     * @param strategyAward
+     * @return
+     */
+    StrategyAward queryStrategyAward(StrategyAward strategyAward);
 }

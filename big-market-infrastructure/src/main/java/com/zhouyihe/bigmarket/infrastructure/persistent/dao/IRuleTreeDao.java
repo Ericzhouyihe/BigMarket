@@ -5,7 +5,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 /**
  * <p>
- *  Mapper 接口
+ * Mapper 接口
  * </p>
  *
  * @author zhouyihe
@@ -13,5 +13,10 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface IRuleTreeDao {
+    /**
+     * 通过treeId 在 rule_tree 中查找 id,规则树名称,规则树描述,规则树的树根入口节点
+     * @param treeId
+     * @return
+     */
     RuleTree queryRuleTreeByTreeId(String treeId);
 }

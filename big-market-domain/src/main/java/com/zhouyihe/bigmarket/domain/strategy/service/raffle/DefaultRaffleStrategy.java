@@ -1,10 +1,13 @@
 package com.zhouyihe.bigmarket.domain.strategy.service.raffle;
 
+import com.zhouyihe.bigmarket.domain.strategy.model.entity.StrategyAwardEntity;
 import com.zhouyihe.bigmarket.domain.strategy.model.valobj.RuleTreeVO;
 import com.zhouyihe.bigmarket.domain.strategy.model.valobj.StrategyAwardRuleModelVO;
 import com.zhouyihe.bigmarket.domain.strategy.model.valobj.StrategyAwardStockKeyVO;
 import com.zhouyihe.bigmarket.domain.strategy.repository.IStrategyRepository;
 import com.zhouyihe.bigmarket.domain.strategy.service.AbstractRaffleStrategy;
+import com.zhouyihe.bigmarket.domain.strategy.service.IRaffleAward;
+import com.zhouyihe.bigmarket.domain.strategy.service.IRaffleStock;
 import com.zhouyihe.bigmarket.domain.strategy.service.armory.IStrategyDispatch;
 import com.zhouyihe.bigmarket.domain.strategy.service.rule.chain.ILogicChain;
 import com.zhouyihe.bigmarket.domain.strategy.service.rule.chain.factory.DefaultChainFactory;
@@ -13,6 +16,8 @@ import com.zhouyihe.bigmarket.domain.strategy.service.rule.tree.factory.engine.I
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * @author ZhouYihe 1552951165@qq.com
  * @create 2024/9/18 23:18
@@ -20,7 +25,7 @@ import org.springframework.stereotype.Service;
  */
 @Slf4j
 @Service
-public class DefaultRaffleStrategy extends AbstractRaffleStrategy {
+public class DefaultRaffleStrategy extends AbstractRaffleStrategy implements IRaffleStock, IRaffleAward {
     
     // @Resource
     // private DefaultLogicFactory logicFactory;
@@ -56,12 +61,15 @@ public class DefaultRaffleStrategy extends AbstractRaffleStrategy {
      */
     @Override
     public DefaultTreeFactory.StrategyAwardVO raffleLogicTree(String userId, Long strategyId, Integer awardId) {
-        // 根据 抽奖策略id 和 奖品id 查询对应的规则模型
+        // 根据 抽奖策略id 和 奖品id 查询对应的规则模型--也是直接通过strategyId,awardId 在 strategy_award中查找
         StrategyAwardRuleModelVO strategyAwardRuleModelVO = repository.queryStrategyAwardRuleModelVO(strategyId,
-                awardId);
+                                                                                                     awardId);
         if (null == strategyAwardRuleModelVO) {
-            return DefaultTreeFactory.StrategyAwardVO.builder().awardId(awardId).build();
+            return DefaultTreeFactory.StrategyAwardVO.builder()
+                    .awardId(awardId)
+                    .build();
         }
+        
         // 生成规则树
         RuleTreeVO ruleTreeVO = repository.queryRuleTreeVOByTreeId(strategyAwardRuleModelVO.getRuleModels());
         if (null == ruleTreeVO) {
@@ -94,7 +102,18 @@ public class DefaultRaffleStrategy extends AbstractRaffleStrategy {
      */
     @Override
     public void updateStrategyAwardStock(Long strategyId, Integer awardId) {
-        repository.updateStrategyAwardStock(strategyId,awardId);
+        repository.updateStrategyAwardStock(strategyId, awardId);
+    }
+    
+    /**
+     * 根据策略id查询抽奖奖品列表配置
+     *
+     * @param strategyId 策略id
+     * @return 奖品列表
+     */
+    @Override
+    public List<StrategyAwardEntity> queryRaffleStrategyAwardList(Long strategyId) {
+        return repository.queryStrategyAwardList(strategyId);
     }
     
     // 两个遗弃的方法

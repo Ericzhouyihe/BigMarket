@@ -59,6 +59,7 @@ public class StrategyRuleEntity {
      */
     public Map<String, List<Integer>> getRuleWeightValues() {
         if (!"rule_weight".equals(ruleModel)) return null;
+        // 空格进行分割
         String[] ruleValueGroups = ruleValue.split(Constants.SPACE);
         Map<String,List<Integer>> resultMap = new HashMap<>();
         for (String ruleValueGroup : ruleValueGroups) {
@@ -66,7 +67,7 @@ public class StrategyRuleEntity {
             if (ruleValueGroup == null || ruleValueGroup.isEmpty()) {
                 return resultMap;
             }
-            // 分割字符串以获取键和值
+            // 分割字符串: 以获取键和值 4000:102,103,104,105
             String[] parts = ruleValueGroup.split(Constants.COLON);
             if (parts.length != 2) {
                 throw new IllegalArgumentException("rule_weight rule_rule invalid input format" + ruleValueGroup);
@@ -77,7 +78,7 @@ public class StrategyRuleEntity {
             for (String valueString : valueStrings) {
                 values.add(Integer.parseInt(valueString));
             }
-            // 将键和值放入Map中
+            // 将键和值放入Map中 4000:102,103,104,105 {102,103,104,105}
             resultMap.put(ruleValueGroup,values);
         }
         return resultMap;

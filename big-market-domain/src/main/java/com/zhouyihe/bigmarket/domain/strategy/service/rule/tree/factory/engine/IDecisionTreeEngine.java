@@ -9,7 +9,7 @@ import com.zhouyihe.bigmarket.domain.strategy.service.rule.tree.factory.DefaultT
  */
 public interface IDecisionTreeEngine{
     /**
-     * 根据抽奖次数判断、库存判断、兜底兜里返回最终的可获得奖品信息
+     * 根据抽奖次数判断、库存判断、兜底返回最终的可获得奖品信息
      * @param userId
      * @param strategyId
      * @param awardId

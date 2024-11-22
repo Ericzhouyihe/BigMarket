@@ -39,47 +39,51 @@ public class StrategyArmoryDispatch implements IStrategyArmory, IStrategyDispatc
     @Override
     public boolean assembleLotteryStrategy(Long strategyId) {
         // 1. 查询策略配置
+        // 装配 策略id 对应的 奖品列表
         List<StrategyAwardEntity> strategyAwardEntities = repository.queryStrategyAwardList(strategyId);
-        assembleLotteryStrategy(String.valueOf(strategyId), strategyAwardEntities);
         
-        // 2. 缓存奖品的库存[用于decr扣减库存使用]
+        // 2. 缓存奖品的库存总数量[用于decr扣减库存使用]
         for (StrategyAwardEntity strategyAwardEntity : strategyAwardEntities) {
             Integer awardId = strategyAwardEntity.getAwardId();
             Integer awardCount = strategyAwardEntity.getAwardCount();
+            // 缓存起来
             cacheStrategyAwardCount(strategyId, awardId, awardCount);
         }
         
         // 3.1 默认装配配置[全量抽奖概率]
+        assembleLotteryStrategy(String.valueOf(strategyId), strategyAwardEntities);
         
-        
-        // 3.2. 权重策略配置 - 适用于 rule_weight 权重规则配置
+        // 3.2 rule_weight 权重策略配置,配置了rule_weight则需要配置,就是积分等级划分的规则 到4000,6000积分等级可抽到的奖品范围不同
+        // 从strategy表中查出strategyId对应的策略的基本信息,策略下配置的规则模型
         StrategyEntity strategyEntity = repository.queryStrategyEntityByStrategyId(strategyId);
+        // 策略的规则模型ruleModels中若配置了ruleWeight,这里就会返回"ruleWeight",否则返回null
         String ruleWeight = strategyEntity.getRuleWeight();
-        
-        // 当RuleWeight中没有rule_weight类型时,直接返回true
+        // 当RuleWeight中没有rule_weight类型时,直接返回true -- 策略配置完成
         if (null == ruleWeight) return true;
         
-        // 获取抽奖跪着类型为rule_weight的抽奖规则
+        // 获取抽奖规则类型为rule_weight的抽奖规则
         StrategyRuleEntity strategyRuleEntity = repository.queryStrategyRule(strategyId, ruleWeight);
         
         // 查询结果为空,抛出异常
         if (null == strategyRuleEntity) {
             throw new AppException(ResponseCode.STRATEGY_RULE_WEIGHT_IS_NULL.getCode(),
-                                   ResponseCode.STRATEGY_RULE_WEIGHT_IS_NULL.getInfo());
+                    ResponseCode.STRATEGY_RULE_WEIGHT_IS_NULL.getInfo());
         }
         
         // 获取权重值
         Map<String, List<Integer>> ruleWeightValueMap = strategyRuleEntity.getRuleWeightValues();
-        // 将所有的键存储成一个Set集合
-        Set<String> keys = ruleWeightValueMap.keySet();
-        for (String key : keys) {
-            List<Integer> ruleWeightValues = ruleWeightValueMap.get(key);
+        // 将所有的键(配置规则里的积分等级--到达某一个积分等级之后会新增可以抽到的奖品)存储成一个Set集合--积分等级的集合
+        Set<String> pointLevels = ruleWeightValueMap.keySet();
+        for (String pointLevel : pointLevels) {
+            List<Integer> ruleWeightValues = ruleWeightValueMap.get(pointLevel);
             // 克隆strategyAwardEntities
             ArrayList<StrategyAwardEntity> strategyAwardEntitiesClone = new ArrayList<>(strategyAwardEntities);
             strategyAwardEntitiesClone.removeIf(entity -> !ruleWeightValues.contains(entity.getAwardId()));
+            
+            // strategyId_key List<Integer>
             assembleLotteryStrategy(String.valueOf(strategyId)
-                                            .concat(Constants.UNDERLINE)
-                                            .concat(key), strategyAwardEntitiesClone);
+                    .concat(Constants.UNDERLINE)
+                    .concat(pointLevel), strategyAwardEntitiesClone);
         }
         
         return true;
@@ -87,13 +91,14 @@ public class StrategyArmoryDispatch implements IStrategyArmory, IStrategyDispatc
     
     /**
      * 缓存
+     *
      * @param strategyId
+     * @param awardId
      * @param awardCount
-     * @param awardCount1
      */
     private void cacheStrategyAwardCount(Long strategyId, Integer awardId, Integer awardCount) {
         String cacheKey = Constants.RedisKey.STRATEGY_AWARD_COUNT_KEY + Constants.UNDERLINE + awardId;
-        repository.cacheStrategyAwardCount(cacheKey,awardCount);
+        repository.cacheStrategyAwardCount(cacheKey, awardCount);
     }
     
     
@@ -143,7 +148,7 @@ public class StrategyArmoryDispatch implements IStrategyArmory, IStrategyDispatc
         
         // 7. 存放到 Redis
         repository.storeStrategyAwardSearchRateTable(key, shuffleStrategyAwardSearchRateTable.size(),
-                                                     shuffleStrategyAwardSearchRateTable);
+                shuffleStrategyAwardSearchRateTable);
     }
     
     @Override

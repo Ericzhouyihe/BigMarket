@@ -24,7 +24,14 @@
     </select>
 
     <select id="queryStrategyAwardListByStrategyId" parameterType="java.lang.Long" resultMap="dataMap">
-        select strategy_id, award_id, award_count, award_count_surplus, award_rate
+        select strategy_id,
+               award_id,
+               award_title,
+               award_subtitle,
+               award_count,
+               award_count_surplus,
+               award_rate,
+               sort
         from strategy_award
         where strategy_id = #{strategy_id}
     </select>
@@ -38,10 +45,29 @@
           and award_id = #{awardId}
     </select>
 
-    <update id="updateStrategyAwardStock" parameterType="com.zhouyihe.bigmarket.infrastructure.persistent.po.StrategyAward">
+    <update id="updateStrategyAwardStock"
+            parameterType="com.zhouyihe.bigmarket.infrastructure.persistent.po.StrategyAward">
         update strategy_award
         set award_count_surplus = award_count_surplus - 1
-        where strategy_id = #{strategyId} and award_id = #{awardId} and award_count_surplus > 0
+        where strategy_id = #{strategyId}
+          and award_id = #{awardId}
+          and award_count_surplus > 0
     </update>
+
+    <select id="queryStrategyAward" resultType="com.zhouyihe.bigmarket.infrastructure.persistent.po.StrategyAward">
+        select strategy_id,
+               award_id,
+               award_title,
+               award_subtitle,
+               award_count,
+               award_count_surplus,
+               award_rate,
+               rule_models,
+               sort
+        from strategy_award
+        where strategy_id = #{strategyId}
+          and award_id = #{awardId}
+    </select>
+
 
 </mapper>

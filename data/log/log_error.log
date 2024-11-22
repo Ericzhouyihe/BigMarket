@@ -1,0 +1,8 @@
+24-11-22.00:06:50.547 [HikariPool-1 housekeeper] WARN  HikariPool             - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2m13s423ms821µs300ns).
+24-11-22.03:30:54.054 [HikariPool-1 housekeeper] WARN  HikariPool             - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=3h24m3s510ms723µs900ns).
+24-11-22.05:30:46.335 [HikariPool-1 housekeeper] WARN  HikariPool             - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=16m20s710ms443µs400ns).
+24-11-22.20:34:14.744 [http-nio-8091-exec-28] ERROR IRaffleController      - 随机抽奖失败 strategyId：0 big_market_strategy_rate_range_key_0:UN_ASSEMBLED_STRATEGY_ARMORY
+24-11-22.20:34:37.468 [http-nio-8091-exec-29] ERROR IRaffleController      - 随机抽奖失败 strategyId：0 big_market_strategy_rate_range_key_0:UN_ASSEMBLED_STRATEGY_ARMORY
+24-11-22.20:37:31.542 [http-nio-8091-exec-38] ERROR IRaffleController      - 随机抽奖失败 strategyId：0 big_market_strategy_rate_range_key_0:UN_ASSEMBLED_STRATEGY_ARMORY
+24-11-22.21:33:36.609 [http-nio-8091-exec-39] ERROR IRaffleController      - 随机抽奖失败 strategyId：100005 big_market_strategy_rate_range_key_100005:UN_ASSEMBLED_STRATEGY_ARMORY
+24-11-22.21:37:03.534 [http-nio-8091-exec-43] ERROR IRaffleController      - 随机抽奖失败 strategyId：100005 big_market_strategy_rate_range_key_100005:UN_ASSEMBLED_STRATEGY_ARMORY
