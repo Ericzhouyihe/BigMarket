@@ -1,0 +1,1 @@
+docker build -t zhouyihe/big-market-front-app:1.0 .
