@@ -1,5 +1,7 @@
 package com.zhouyihe.bigmarket.infrastructure.persistent.po;
 
+import lombok.Data;
+
 import java.util.Date;
 
 /**
@@ -7,17 +9,18 @@ import java.util.Date;
  * @create 2024/12/3 15:14
  * @description 抽奖活动订单表
  */
+@Data
 public class RaffleActivityOrder {
     /** 主键id */
-    private Integer id ;
+    private Long id ;
     /** 用户id */
     private String userId ;
     /** 活动id */
-    private String activityId ;
+    private Long activityId ;
     /** 活动名称 */
     private String activityName ;
     /** 策略id */
-    private Integer strategyId ;
+    private Long strategyId ;
     /** 订单id */
     private String orderId ;
     /** 下单时间 */

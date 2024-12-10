@@ -36,7 +36,7 @@ public class RaffleActivity {
     /** 活动状态 */
     private String state ;
     /** 创建时间 */
-    private Date createdTime ;
+    private Date createTime ;
     /** 更新时间 */
-    private Date updatedTime ;
+    private Date updateTime ;
 }
