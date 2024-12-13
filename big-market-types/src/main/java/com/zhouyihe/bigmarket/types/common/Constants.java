@@ -23,5 +23,12 @@ public class Constants {
         public static String STRATEGY_AWARD_COUNT_KEY = "strategy_award_count_key_";
         // 延迟队列,进行延迟减少库存量
         public static String STRATEGY_AWARD_COUNT_QUEUE_KEY = "strategy_award_count_queue_key";
+        
+        // 存放活动id 对应的 活动的实体 ActivityEntity
+        public static String ACTIVITY_KEY = "big_market_activity_key_";
+        // 存放活动id 对应的 活动的实体 ActivityEntity
+        public static String ACTIVITY_SKU_KEY = "big_market_activity_sku_key_";
+        // 存放活动数量ID activityCountId 对应的 活动数量实体类 ActivityCountEntity
+        public static String ACTIVITY_COUNT_KEY = "big_market_activity_count_key_";
     }
 }

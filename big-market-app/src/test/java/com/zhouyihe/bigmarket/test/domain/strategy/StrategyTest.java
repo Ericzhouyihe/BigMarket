@@ -1,4 +1,4 @@
-package com.zhouyihe.bigmarket.test.domain;
+package com.zhouyihe.bigmarket.test.domain.strategy;
 
 import com.zhouyihe.bigmarket.domain.strategy.service.armory.IStrategyArmory;
 import com.zhouyihe.bigmarket.domain.strategy.service.armory.IStrategyDispatch;

@@ -1,4 +1,4 @@
-package com.zhouyihe.bigmarket.test.domain;
+package com.zhouyihe.bigmarket.test.domain.strategy;
 
 import com.alibaba.fastjson.JSON;
 import com.zhouyihe.bigmarket.domain.strategy.model.entity.RaffleAwardEntity;
@@ -19,7 +19,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import javax.annotation.Resource;
-import java.util.concurrent.CountDownLatch;
 
 /**
  * @author ZhouYihe 1552951165@qq.com

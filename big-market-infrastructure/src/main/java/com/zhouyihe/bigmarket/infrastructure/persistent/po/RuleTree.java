@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
  * @since 2024-11-16
  */
 @Data
-
 public class RuleTree {
     
     /**

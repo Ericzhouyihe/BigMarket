@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhouyihe.bigmarket.infrastructure.persistent.dao.IRaffleActivitySkuDao">
+    <resultMap type="com.zhouyihe.bigmarket.infrastructure.persistent.po.RaffleActivitySku" id="dataMap">
+        <id column="id" property="id"/>
+        <result property="sku" column="sku"/>
+        <result property="activityId" column="activity_id"/>
+        <result property="activityCountId" column="activity_count_id"/>
+        <result property="stockCount" column="stock_count"/>
+        <result property="stockCountSurplus" column="stock_count_surplus"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <select id="queryActivitySku" parameterType="java.lang.Long" resultMap="dataMap">
+        select sku, activity_id, activity_count_id, stock_count, stock_count_surplus
+        from raffle_activity_sku
+        where sku = #{sku}
+    </select>
+
+</mapper>

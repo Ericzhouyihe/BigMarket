@@ -1,4 +1,4 @@
-package com.zhouyihe.bigmarket.test.domain;
+package com.zhouyihe.bigmarket.test.domain.strategy;
 
 import com.alibaba.fastjson.JSON;
 import com.zhouyihe.bigmarket.domain.strategy.model.valobj.*;

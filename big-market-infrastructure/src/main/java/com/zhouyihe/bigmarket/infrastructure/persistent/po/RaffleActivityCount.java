@@ -1,5 +1,8 @@
 package com.zhouyihe.bigmarket.infrastructure.persistent.po;
 
+import com.zhouyihe.bigmarket.domain.activity.model.entity.ActivityCountEntity;
+import com.zhouyihe.bigmarket.domain.strategy.model.entity.StrategyAwardEntity;
+import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 
 import java.util.Date;
@@ -10,6 +13,7 @@ import java.util.Date;
  * @description 抽奖活动次数配置表 持久化对象
  */
 @Data
+@AutoMapper(target = ActivityCountEntity.class)
 public class RaffleActivityCount {
     /**
      * 自增ID
