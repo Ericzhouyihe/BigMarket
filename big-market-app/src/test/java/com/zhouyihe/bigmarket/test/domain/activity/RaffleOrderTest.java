@@ -24,6 +24,7 @@ public class RaffleOrderTest {
     @Resource
     private IRaffleOrder raffleOrder;
     
+    
     @Test
     public void test_createSkuRechargeOrder() {
         SkuRechargeEntity skuRechargeEntity = new SkuRechargeEntity();
