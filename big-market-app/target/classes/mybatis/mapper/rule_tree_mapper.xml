@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhouyihe.bigmarket.infrastructure.persistent.dao.IRuleTreeDao">
+
+    <resultMap type="com.zhouyihe.bigmarket.infrastructure.persistent.po.RuleTree" id="dataMap">
+        <result property="id" column="id"/>
+        <result property="treeId" column="tree_id"/>
+        <result property="treeName" column="tree_name"/>
+        <result property="treeDesc" column="tree_desc"/>
+        <result property="treeNodeRuleKey" column="tree_node_rule_key"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <select id="queryRuleTreeByTreeId" parameterType="java.lang.String" resultMap="dataMap">
+        select tree_id, tree_name, tree_desc, tree_node_rule_key
+        from rule_tree
+        where tree_id = #{treeId}
+    </select>
+</mapper>

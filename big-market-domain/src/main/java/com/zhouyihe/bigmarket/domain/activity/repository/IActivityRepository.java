@@ -1,5 +1,6 @@
 package com.zhouyihe.bigmarket.domain.activity.repository;
 
+import com.zhouyihe.bigmarket.domain.activity.model.aggregate.CreateOrderAggregate;
 import com.zhouyihe.bigmarket.domain.activity.model.entity.ActivityCountEntity;
 import com.zhouyihe.bigmarket.domain.activity.model.entity.ActivityEntity;
 import com.zhouyihe.bigmarket.domain.activity.model.entity.ActivitySkuEntity;
@@ -34,4 +35,10 @@ public interface IActivityRepository {
      * @return
      */
     ActivityCountEntity queryRaffleActivityCountByActivityCountId(Long activityCountId);
+    
+    /**
+     * 保存订单
+     * @param createOrderAggregate
+     */
+    void doSaveOrder(CreateOrderAggregate createOrderAggregate);
 }

@@ -7,7 +7,7 @@ import java.util.Date;
 /**
  * @author ZhouYihe 1552951165@qq.com
  * @create 2024/12/3 15:14
- * @description 抽奖活动订单表
+ * @description 抽奖活动订单表 持久化对象
  */
 @Data
 public class RaffleActivityOrder {
@@ -22,7 +22,7 @@ public class RaffleActivityOrder {
     /**
      * 商品sku
      */
-    private Integer sku;
+    private Long sku;
     /**
      * 活动id
      */
@@ -46,19 +46,23 @@ public class RaffleActivityOrder {
     /**
      * 总次数
      */
-    private String totalCount;
+    private Integer totalCount;
     /**
      * 日次数
      */
-    private String dayCount;
+    private Integer dayCount;
     /**
      * 月次数
      */
-    private String mouthCount;
+    private Integer mouthCount;
     /**
      * 订单状态（not_used、used、expire）
      */
     private String state;
+    /**
+     * 业务仿重ID - 外部透传的，确保幂等
+     */
+    private String outBusinessNo;
     /**
      * 创建时间
      */

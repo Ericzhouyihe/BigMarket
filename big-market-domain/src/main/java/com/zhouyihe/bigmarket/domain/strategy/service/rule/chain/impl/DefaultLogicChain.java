@@ -11,7 +11,7 @@ import javax.annotation.Resource;
 /**
  * @author ZhouYihe 1552951165@qq.com
  * @create 2024/11/14 13:25
- * @description
+ * @description 默认
  */
 @Slf4j
 @Component("default")
