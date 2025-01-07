@@ -30,6 +30,7 @@ public abstract class AbstractRaffleStrategy implements IRaffleStrategy {
     // 策略调度服务 -> 只负责抽奖处理，通过新增接口的方式，隔离职责，不需要使用方关心或者调用抽奖的初始化
     protected IStrategyDispatch strategyDispatch;
     
+    // 构造方法实现依赖注入
     public AbstractRaffleStrategy(DefaultChainFactory defaultChainFactory, DefaultTreeFactory defaultTreeFactory,
             IStrategyDispatch strategyDispatch, IStrategyRepository repository) {
         this.defaultChainFactory = defaultChainFactory;

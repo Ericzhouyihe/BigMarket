@@ -6,6 +6,7 @@ package com.zhouyihe.bigmarket.domain.strategy.service.rule.chain;
  * @description
  */
 public abstract class AbstractLogicChain implements ILogicChain{
+    
     private ILogicChain next;
     
     @Override
@@ -20,4 +21,5 @@ public abstract class AbstractLogicChain implements ILogicChain{
     }
     
     protected abstract String ruleModel();
+    
 }

@@ -16,6 +16,7 @@ import java.util.Map;
  */
 @Service
 public class DefaultChainFactory {
+    
     private final Map<String, ILogicChain> logicChainGroup;
     
     private final IStrategyRepository repository;
@@ -38,13 +39,15 @@ public class DefaultChainFactory {
         // 如果策略模型是空的,则直接配置一个default的责任链即可
         if (null == ruleModels || 0 == ruleModels.length) return logicChainGroup.get("default");
         
+        // 模型不为空,则按照模型的顺序,一个一个组成责任链
         ILogicChain logicChain = logicChainGroup.get(ruleModels[0]);
         ILogicChain current = logicChain;
+        // 前面创建好了头节点, 从第二个开始将后续节点拼接进入责任链中即可
         for (int i = 1; i < ruleModels.length; i++) {
             ILogicChain nextChain = logicChainGroup.get(ruleModels[i]);
             current = current.appendNext(nextChain);
         }
-        
+        // 最后拼接上默认处理节点
         current.appendNext(logicChainGroup.get("default"));
         
         return logicChain;

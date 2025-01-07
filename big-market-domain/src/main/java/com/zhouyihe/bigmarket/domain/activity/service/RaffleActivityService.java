@@ -2,6 +2,7 @@ package com.zhouyihe.bigmarket.domain.activity.service;
 
 import com.zhouyihe.bigmarket.domain.activity.model.aggregate.CreateOrderAggregate;
 import com.zhouyihe.bigmarket.domain.activity.model.entity.*;
+import com.zhouyihe.bigmarket.domain.activity.model.valobj.ActivitySkuStockKeyVO;
 import com.zhouyihe.bigmarket.domain.activity.model.valobj.OrderStateVO;
 import com.zhouyihe.bigmarket.domain.activity.repository.IActivityRepository;
 import com.zhouyihe.bigmarket.domain.activity.service.rule.factory.DefaultActivityChainFactory;
@@ -16,7 +17,7 @@ import java.util.Date;
  * @description 抽奖活动服务
  */
 @Service
-public class RaffleActivityService extends AbstractRaffleActivity {
+public class RaffleActivityService extends AbstractRaffleActivity implements ISkuStock{
     
     public RaffleActivityService(IActivityRepository activityRepository,
             DefaultActivityChainFactory defaultActivityChainFactory) {
@@ -57,5 +58,44 @@ public class RaffleActivityService extends AbstractRaffleActivity {
     @Override
     protected void doSaveOrder(CreateOrderAggregate createOrderAggregate) {
         activityRepository.doSaveOrder(createOrderAggregate);
+    }
+    
+    /**
+     * 获取活动sku库存消耗队列
+     *
+     * @return 奖品库存Key信息
+     * @throws InterruptedException 异常
+     */
+    @Override
+    public ActivitySkuStockKeyVO takeQueueValue() throws InterruptedException {
+        return activityRepository.takeQueueValue();
+    }
+    
+    /**
+     * 清空队列
+     */
+    @Override
+    public void clearQueueValue() {
+        activityRepository.clearQueueValue();
+    }
+    
+    /**
+     * 延迟队列 + 任务趋势更新活动sku库存
+     *
+     * @param sku 活动商品
+     */
+    @Override
+    public void updateActivitySkuStock(Long sku) {
+        activityRepository.updateActivitySkuStock(sku);
+    }
+    
+    /**
+     * 缓存库存以消耗完毕，清空数据库库存
+     *
+     * @param sku 活动商品
+     */
+    @Override
+    public void clearActivitySkuStock(Long sku) {
+        activityRepository.clearActivitySkuStock(sku);
     }
 }

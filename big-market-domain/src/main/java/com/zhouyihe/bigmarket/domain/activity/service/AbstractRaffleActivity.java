@@ -16,7 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * @author ZhouYihe 1552951165@qq.com
  * @create 2024/12/13 21:49
-     * @description 抽奖活动抽象类，定义标准的流程
+ * @description 抽奖活动抽象类，定义标准的流程
  */
 @Slf4j
 public abstract class AbstractRaffleActivity extends RaffleActivitySupport implements IRaffleOrder {

@@ -8,6 +8,7 @@ import com.zhouyihe.bigmarket.domain.strategy.service.rule.chain.factory.Default
  * @description 责任链接口
  */
 public interface ILogicChain extends ILoginChainArmory {
+    
     /**
      * 责任链接口
      *

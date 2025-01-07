@@ -8,6 +8,7 @@ public class Constants {
     public final static String UNDERLINE = "_";
     
     public static class RedisKey {
+        
         // 存放 策略id 对应的策略信息(也是就strategy表中对应strategyId的一些基本信息--id,抽奖策略描述,策略的规则模型)
         public static String STRATEGY_KEY = "big_market_strategy_key_";
         public static String STRATEGY_AWARD_KEY = "big_market_strategy_award_key_";
@@ -30,5 +31,10 @@ public class Constants {
         public static String ACTIVITY_SKU_KEY = "big_market_activity_sku_key_";
         // 存放活动数量ID activityCountId 对应的 活动数量实体类 ActivityCountEntity
         public static String ACTIVITY_COUNT_KEY = "big_market_activity_count_key_";
+        // 延迟队列 进行sku商品库存数量的扣减 申明延迟队列的key
+        public static final String ACTIVITY_SKU_COUNT_QUEUE_KEY = "activity_sku_count_queue_key";
+        // 存放 sku 对应的物品的库存
+        public static final String ACTIVITY_SKU_STOCK_COUNT_KEY = "activity_sku_stock_count_key_";
+        
     }
 }
