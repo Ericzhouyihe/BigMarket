@@ -193,7 +193,7 @@ public class ActivityRepository implements IActivityRepository {
     @Override
     public void cacheActivitySkuStockCount(String cacheKey, Integer stockCount) {
         if (redisService.isExists(cacheKey)) return;
-        redisService.setValue(cacheKey, stockCount);
+        redisService.setAtomicLong(cacheKey, stockCount);
     }
     
     /**

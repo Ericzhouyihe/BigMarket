@@ -34,6 +34,9 @@ public class RaffleOrderTest {
         log.info("装配活动:{}", activityArmory.assembleActivitySku(9011L));
     }
     
+    /**
+     * 写入一个订单的同时,扣减raffle_activity_sku表中的库存数量
+     */
     @Test
     public void test_createSkuRechargeOrder_duplicate() {
         SkuRechargeEntity skuRechargeEntity = new SkuRechargeEntity();

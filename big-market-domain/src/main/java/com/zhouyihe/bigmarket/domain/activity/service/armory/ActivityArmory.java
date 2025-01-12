@@ -29,6 +29,7 @@ public class ActivityArmory implements IActivityArmory, IActivityDispatch {
      */
     @Override
     public boolean assembleActivitySku(Long sku) {
+        // 根据sku获得activity_sku的实体类
         ActivitySkuEntity activitySkuEntity = activityRepository.queryActivitySku(sku);
         cacheActivitySkuStockCount(sku, activitySkuEntity.getStockCount());
         

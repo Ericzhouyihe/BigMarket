@@ -291,7 +291,7 @@ public class StrategyRepository implements IStrategyRepository {
      */
     @Override
     public Boolean subtractionAwardStock(String cacheKey) {
-        // decr--根据键查值之后将redis中的值减少1个并返回
+        // --根据键查值之后将redis中的值减少1个并返回
         long surplus = redisService.decr(cacheKey);
         if (surplus < 0) {
             redisService.setValue(cacheKey, 0);

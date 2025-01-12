@@ -28,15 +28,15 @@ public class ActivityBaseActionChain extends AbstractActionChain {
                 activityEntity.getActivityId());
         
         // 校验:活动状态
-        if (!activityEntity.getState().equals(ActivityStateVO.open.getCode())) {
+        if (!activityEntity.getState().equals(ActivityStateVO.open)) {
             throw new AppException(ResponseCode.ACTIVITY_STATE_ERROR.getCode(),
                     ResponseCode.ACTIVITY_STATE_ERROR.getInfo());
         }
         
         // 校验: 活动动日期  开始时间 <= 当前时间 <= 结束时间
         Date currentDate = new Date();
-        if (activityEntity.getBeginDateTime().after(currentDate) || activityEntity.getEndDateTime()
-                .before(currentDate)) {
+        if (activityEntity.getBeginDateTime().after(currentDate) ||
+                activityEntity.getEndDateTime().before(currentDate)) {
             throw new AppException(ResponseCode.ACTIVITY_DATE_ERROR.getCode(),
                     ResponseCode.ACTIVITY_DATE_ERROR.getInfo());
         }

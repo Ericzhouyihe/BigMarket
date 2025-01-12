@@ -36,7 +36,7 @@ public class ActivitySkuStockZeroCustomer {
                     new TypeReference<BaseEvent.EventMessage<Long>>() {
                     }.getType());
             Long sku = eventMessage.getData();
-            // 更新库存
+            // 清空对应sku的库存
             skuStock.clearActivitySkuStock(sku);
             // 清空队列 「此时就不需要延迟更新数据库记录了」
             skuStock.clearQueueValue();
